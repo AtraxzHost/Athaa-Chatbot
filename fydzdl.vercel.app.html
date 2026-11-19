@@ -1,0 +1,1100 @@
+<!doctype html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#0d0f18">
+<meta name="description" content="AllHub Downloader — Media downloader utility.">
+<title>AllHub Downloader</title>
+
+<!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
+<meta name="google-site-verification" content="I2hgAWayX8o4fWbwktBXA_QnoK_PZ_edA5Fmv7ylN4M" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0d0f18 70%);
+  --panel-bg: #171926; /* Warna solid agar tidak transparan/nembus saat scroll */
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-cyan: #38bdf8;
+  --accent-purple: #c084fc;
+  --accent-green: #34d399;
+  --accent-yellow: #facc15;
+  --input-bg: rgba(15, 23, 42, 0.95);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+[data-theme="light"] {
+  --bg-gradient: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f8fafc 70%);
+  --panel-bg: #ffffff;
+  --panel-border: rgba(15, 23, 42, 0.09);
+  --panel-glow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --input-bg: rgba(241, 245, 249, 0.95);
+}
+
+* { box-sizing: border-box; }
+html { 
+  scroll-behavior: smooth; 
+  background-color: #0d0f18;
+  height: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  width: 100%;
+  overscroll-behavior-y: none;
+}
+
+.topbar {
+  width: 100%;
+  height: 68px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--panel-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  min-width: 0;
+}
+
+.logo {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+  flex-shrink: 0;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-toggle, .badge-status {
+  padding: 6px 12px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.theme-toggle:hover, .badge-status:hover {
+  border-color: var(--accent-cyan);
+}
+
+.badge-status {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--accent-green);
+  border-color: rgba(52, 211, 153, 0.2);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge-status i {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px var(--accent-green);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+main {
+  width: 100%;
+  max-width: 920px;
+  margin: auto;
+  padding: 30px 16px 60px;
+}
+
+.hero {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  width: 100%;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(192, 132, 252, 0.1);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  color: var(--accent-purple);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(26px, 5.5vw, 44px);
+  letter-spacing: -.03em;
+  line-height: 1.15;
+  margin: 0 0 14px;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+h1 span {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lead {
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.panel {
+  width: 100%;
+  padding: 22px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--panel-glow);
+  position: relative;
+  margin-bottom: 28px;
+  z-index: 2;
+}
+
+label {
+  display: block;
+  color: var(--text-main);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  margin-bottom: 10px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 56px;
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  padding: 0 6px 0 16px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+input[type=url] {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  background: transparent !important;
+  border: none;
+  color: var(--text-main);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  box-shadow: none;
+  -webkit-text-fill-color: var(--text-main);
+}
+
+input[type=url]::placeholder {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+input[type=url]:autofill,
+input[type=url]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+}
+
+.btn-paste {
+  height: 42px;
+  padding: 0 16px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+}
+
+.btn-paste:hover {
+  filter: brightness(1.08);
+}
+
+.btn-paste:active {
+  transform: scale(0.96);
+}
+
+button.submit {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0 20px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: .08em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button.submit:hover {
+  filter: brightness(1.08);
+}
+
+button.submit:active {
+  transform: scale(0.98);
+}
+
+button.submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
+.hint {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 14px 0 0;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.platforms {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.plat-pill {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-main);
+  border: 1px solid var(--panel-border);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 5px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.output {
+  display: none;
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  background: var(--input-bg);
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.output h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.preview-thumb {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  background: #000;
+}
+
+.result-meta {
+  width: 100%;
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.result-author {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.download-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.btn-dl {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-green), #059669);
+  color: #064e3b;
+  font-weight: 800;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+  word-break: break-all;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2);
+}
+
+.btn-dl:hover {
+  filter: brightness(1.08);
+}
+
+.btn-dl:active {
+  transform: scale(0.98);
+}
+
+.btn-dl.hd {
+  background: linear-gradient(135deg, #f97316, #f43f5e);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(244, 63, 94, 0.25);
+}
+
+.btn-dl.sec {
+  background: linear-gradient(135deg, var(--accent-yellow), #d97706);
+  color: #78350f;
+  box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
+}
+
+.log {
+  max-height: 120px;
+  overflow-y: auto;
+  font: 10px/1.5 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 10px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.feature {
+  padding: 20px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: var(--panel-glow);
+  word-break: break-word;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.feature:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  transform: translateY(-2px);
+}
+
+.feature .symbol {
+  font-size: 9px;
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.feature h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.feature p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+footer {
+  border-top: 1px solid var(--panel-border);
+  margin-top: 40px;
+  padding: 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  background: var(--panel-bg);
+  border-top: 1px solid var(--panel-border);
+  font-size: 11px;
+  font-weight: 600;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+footer strong {
+  letter-spacing: .03em;
+  color: var(--text-main);
+}
+
+footer a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+footer a:hover {
+  opacity: 0.8;
+}
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--bg-gradient);
+  backdrop-filter: blur(20px);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.intro-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-card {
+  width: min(320px, 100%);
+  padding: 30px 22px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  animation: introRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.intro-logo {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
+  font-size: 24px;
+  font-weight: 900;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+  overflow: hidden;
+}
+
+.intro-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.intro-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  margin-bottom: 4px;
+}
+
+.intro-title span {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.intro-tagline {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.intro-track {
+  height: 6px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+}
+
+.intro-track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  transform: translateX(-100%);
+  animation: introLoad 5s linear forwards;
+  border-radius: 99px;
+}
+
+@keyframes introLoad {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes introRise {
+  from { opacity: 0; transform: translateY(15px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.custom-modal.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card {
+  width: min(320px, 100%);
+  padding: 24px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  transform: scale(0.95);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-modal.is-active .modal-card {
+  transform: scale(1);
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.modal-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.modal-btn {
+  width: 100%;
+  height: 42px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .08em;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+}
+
+.modal-btn:active {
+  transform: scale(0.98);
+}
+</style>
+</head>
+<body>
+
+<div class="intro-screen" id="introScreen">
+  <div class="intro-card">
+    <div class="intro-logo">
+      <img src="https://res.cloudinary.com/zqq3lfgt/image/upload/v1792824541/file_00000000ba6c82078e9e54d626fb9962.png" alt="Logo Fydz">
+    </div>
+    <div class="intro-title">AllHub <span>Downloader</span></div>
+    <div class="intro-tagline">Loading System</div>
+    <div class="intro-track" style="margin-top: 16px;"><span></span></div>
+  </div>
+</div>
+
+<div class="custom-modal" id="customModal">
+  <div class="modal-card">
+    <div class="modal-title" id="modalTitle">Informasi</div>
+    <div class="modal-desc" id="modalDesc">Pesan sistem...</div>
+    <button class="modal-btn" id="modalClose" type="button">MENGERTI</button>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">F</span>
+    <div>
+      <div>AllHub Downloader</div>
+      <div style="font-size: 8px; color: var(--text-muted); font-weight: 700;">Fydz Official</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div class="badge-status"><i></i><span>ONLINE</span></div>
+    <button class="theme-toggle" id="themeToggle" type="button">TEMA</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">DOWNLOADER UTILITY</div>
+    <h1>Unduh media sosial.<br><span>Cepat, bersih, langsung simpan.</span></h1>
+    <p class="lead">Masukkan tautan video atau konten publik dari berbagai platform untuk mengekstrak dan mengunduh berkas media pada kualitas tertinggi yang tersedia.</p>
+    
+    <div class="panel">
+      <form id="dlForm">
+        <label for="url">URL TAUTAN MEDIA</label>
+        <div class="input-group">
+          <div class="input-wrapper">
+            <input id="url" type="url" placeholder="Tempel tautan video di sini..." required autocomplete="url" spellcheck="false">
+            <button type="button" class="btn-paste" id="btnPaste">Tempel</button>
+          </div>
+          <button class="submit" id="go" type="submit">Download</button>
+        </div>
+        <p class="hint">Didukung oleh sistem ekstraksi Fydz Official dengan mekanisme unduh langsung.</p>
+        <div class="platforms">
+          <span class="plat-pill">TikTok</span>
+          <span class="plat-pill">Instagram</span>
+          <span class="plat-pill">YouTube</span>
+          <span class="plat-pill">Spotify</span>
+          <span class="plat-pill">Pinterest</span>
+        </div>
+      </form>
+
+      <div class="output" id="output" aria-live="polite">
+        <h3 id="resultTitle">Hasil Ekstraksi</h3>
+        <div class="result-card" id="resultCard">
+          <img id="thumb" class="preview-thumb" src="" alt="Thumbnail" style="display:none;">
+          <div class="result-meta">
+            <div id="mediaTitle" class="result-title">Menghubungkan ke server...</div>
+            <div id="mediaAuthor" class="result-author"></div>
+            <div id="dlButtons" class="download-buttons"></div>
+          </div>
+        </div>
+        <div class="log" id="log">Log sistem aktif...</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="feature">
+        <div class="symbol">01</div>
+        <h3>Banyak Platform</h3>
+        <p>Bisa digunakan untuk mengunduh konten dari berbagai situs media sosial populer dengan stabil.</p>
+      </article>
+      <article class="feature">
+        <div class="symbol">02</div>
+        <h3>Unduh Langsung</h3>
+        <p>Tautan media langsung diproses menuju manajer unduhan perangkat pada kualitas maksimal.</p>
+      </article>
+      <article class="feature">
+        <div class="symbol">03</div>
+        <h3>Desain Minimalis</h3>
+        <p>Tampilan antarmuka bersih dan ringan, nyaman dipakai di berbagai ukuran layar ponsel.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div>
+    <strong>AllHub Downloader</strong>
+    <div style="margin-top:2px; color: var(--text-muted);">Fydz Official</div>
+  </div>
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <a href="https://fydzz-official.my.id" target="_blank" rel="noopener noreferrer">Portofolio</a>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+const introScreen = document.getElementById('introScreen');
+if (introScreen) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      introScreen.classList.add('is-hidden');
+    }, 5000);
+  }, { once: true });
+}
+
+const customModal = document.getElementById('customModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalDesc = document.getElementById('modalDesc');
+const modalClose = document.getElementById('modalClose');
+
+function showModal(title, desc) {
+  modalTitle.textContent = title;
+  modalDesc.textContent = desc;
+  customModal.classList.add('is-active');
+}
+
+modalClose.addEventListener('click', () => {
+  customModal.classList.remove('is-active');
+});
+
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  themeToggle.textContent = newTheme === 'light' ? 'TERANG' : 'GELAP';
+});
+
+const form = document.getElementById('dlForm');
+const urlInput = document.getElementById('url');
+const btnPaste = document.getElementById('btnPaste');
+const go = document.getElementById('go');
+const output = document.getElementById('output');
+const resultTitle = document.getElementById('resultTitle');
+const mediaTitle = document.getElementById('mediaTitle');
+const mediaAuthor = document.getElementById('mediaAuthor');
+const thumb = document.getElementById('thumb');
+const dlButtons = document.getElementById('dlButtons');
+const log = document.getElementById('log');
+
+btnPaste.addEventListener('click', async () => {
+  urlInput.focus();
+  try {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        urlInput.value = text.trim();
+        btnPaste.textContent = 'Tertempel';
+        setTimeout(() => { btnPaste.textContent = 'Tempel'; }, 1200);
+        return;
+      }
+    }
+    throw new Error('Clipboard restricted');
+  } catch (err) {
+    urlInput.select();
+    showModal('Tempel Tautan', 'Silakan tahan (long-press) pada kolom input, lalu pilih "Tempel" atau "Paste" untuk memasukkan tautan.');
+  }
+});
+
+function tulisLog(msg) {
+  log.textContent += '\n[LOG] ' + msg;
+  log.scrollTop = log.scrollHeight;
+}
+
+function createDownloadButton(label, url, fileName, extraClass = '') {
+  const a = document.createElement('a');
+  a.className = `btn-dl ${extraClass}`.trim();
+  a.innerHTML = label;
+  a.href = url;
+  a.target = '_blank';
+  a.download = fileName;
+  a.rel = 'noopener noreferrer';
+  return a;
+}
+
+form.addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const inputUrl = urlInput.value.trim();
+  if(!inputUrl) return;
+
+  output.style.display = 'block';
+  dlButtons.innerHTML = '';
+  thumb.style.display = 'none';
+  mediaAuthor.textContent = '';
+  mediaTitle.textContent = 'Menghubungkan ke endpoint...';
+  log.textContent = 'Menganalisis URL...';
+  
+  go.disabled = true;
+  go.textContent = 'MEMPROSES...';
+
+  try {
+    let successLoaded = false;
+
+    // 1. TIKTOK
+    if (/tiktok\.com/i.test(inputUrl)) {
+      tulisLog('Rute: TikTok Parser (TikWM)...');
+      try {
+        const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(inputUrl)}`);
+        const json = await res.json();
+        if (json.code === 0 && json.data) {
+          const d = json.data;
+          resultTitle.textContent = 'Media TikTok Ditemukan';
+          mediaTitle.textContent = d.title || 'TikTok Video';
+          if(d.author) mediaAuthor.textContent = 'Kreator: @' + (d.author.unique_id || 'creator');
+          if(d.cover) { thumb.src = d.cover; thumb.style.display = 'block'; }
+
+          if (d.play) dlButtons.appendChild(createDownloadButton('Unduh Video (Tanpa Watermark)', d.play, 'TikTok_NoWM.mp4'));
+          if (d.hdplay) dlButtons.appendChild(createDownloadButton('Unduh Video HD', d.hdplay, 'TikTok_HD.mp4', 'hd'));
+          if (d.music) dlButtons.appendChild(createDownloadButton('Unduh Audio (MP3)', d.music, 'TikTok_Audio.mp3', 'sec'));
+          if (d.images) {
+            d.images.forEach((img, i) => dlButtons.appendChild(createDownloadButton(`Unduh Foto #${i+1}`, img, `TikTok_Img_${i+1}.jpg`)));
+          }
+          successLoaded = true;
+        }
+      } catch(e) { tulisLog('TikWM error: ' + e.message); }
+    }
+
+    // 2. INSTAGRAM
+    else if (/instagram\.com/i.test(inputUrl)) {
+      tulisLog('Rute: Instagram Parser...');
+      try {
+        const igApi = `https://api.azbry.com/api/download/instagram?url=${encodeURIComponent(inputUrl)}`;
+        const res = await fetch(igApi);
+        const json = await res.json();
+        
+        if (json.status && (json.videos || json.images)) {
+          resultTitle.textContent = 'Media Instagram Ditemukan';
+          mediaTitle.textContent = 'Instagram ' + (json.type || 'Media');
+          
+          if(json.thumb) { 
+            thumb.src = json.thumb; 
+            thumb.style.display = 'block'; 
+          }
+          
+          if(Array.isArray(json.videos) && json.videos.length > 0) {
+            json.videos.forEach((vUrl, i) => {
+              dlButtons.appendChild(createDownloadButton(`Unduh Video IG #${i+1}`, vUrl, `Instagram_Video_${i+1}.mp4`));
+            });
+          }
+
+          if(Array.isArray(json.images) && json.images.length > 0) {
+            json.images.forEach((iUrl, i) => {
+              dlButtons.appendChild(createDownloadButton(`Unduh Foto IG #${i+1}`, iUrl, `Instagram_Foto_${i+1}.jpg`));
+            });
+          }
+
+          successLoaded = true;
+        }
+      } catch(e) { tulisLog('Parser IG error: ' + e.message); }
+    }
+
+    // 3. YOUTUBE
+    else if (/youtu(\.)?be/i.test(inputUrl)) {
+      tulisLog('Rute: YouTube Parser (Savetube)...');
+      try {
+        const ytApi = `https://api.azbry.com/api/download/youtube?url=${encodeURIComponent(inputUrl)}`;
+        const res = await fetch(ytApi);
+        const json = await res.json();
+        
+        if (json.status && json.result) {
+          const r = json.result;
+          resultTitle.textContent = 'Media YouTube Ditemukan';
+          mediaTitle.textContent = r.title || 'YouTube Video';
+          if(r.author) mediaAuthor.textContent = 'Kanal: ' + r.author;
+          
+          if(r.thumbnail) { 
+            thumb.src = r.thumbnail; 
+            thumb.style.display = 'block'; 
+          }
+          
+          const qLabel = r.quality ? ` (${r.quality})` : '';
+          if(r.download) {
+            dlButtons.appendChild(createDownloadButton(`Unduh Video YouTube${qLabel}`, r.download, 'YouTube_Video.mp4', 'hd'));
+          }
+
+          successLoaded = true;
+        }
+      } catch(e) { tulisLog('Parser YouTube error: ' + e.message); }
+    }
+
+    // 4. SPOTIFY
+    else if (/spotify\.com/i.test(inputUrl)) {
+      tulisLog('Rute: Spotify Parser (MusicFab)...');
+      try {
+        const spotifyApi = `https://api.azbry.com/api/download/spotify?url=${encodeURIComponent(inputUrl)}`;
+        const res = await fetch(spotifyApi);
+        const json = await res.json();
+        
+        if (json.status && json.downloadLink) {
+          resultTitle.textContent = 'Musik Spotify Ditemukan';
+          mediaTitle.textContent = json.title || 'Spotify Track';
+          if(json.author) mediaAuthor.textContent = 'Artis: ' + json.author;
+          
+          if(json.cover) { 
+            thumb.src = json.cover; 
+            thumb.style.display = 'block'; 
+          }
+          
+          const fileName = `${json.author || 'Artist'} - ${json.title || 'Track'}.mp3`.replace(/[/\\?%*:|"<>]/g, '');
+          dlButtons.appendChild(createDownloadButton('Unduh Audio Spotify (MP3)', json.downloadLink, fileName, 'sec'));
+
+          successLoaded = true;
+        }
+      } catch(e) { tulisLog('Parser Spotify error: ' + e.message); }
+    }
+
+    // 5. PINTEREST
+    else if (/pinterest\.com|pin\.it/i.test(inputUrl)) {
+      tulisLog('Rute: Pinterest Parser (PinDown)...');
+      try {
+        const pinApi = `https://api.azbry.com/api/download/pinterest?url=${encodeURIComponent(inputUrl)}`;
+        const res = await fetch(pinApi);
+        const json = await res.json();
+        
+        if (json.status && json.result) {
+          const r = json.result;
+          resultTitle.textContent = 'Media Pinterest Ditemukan';
+          mediaTitle.textContent = r.title || 'Pinterest Pin';
+          
+          if(r.thumbnail || r.images?.[0]?.url) { 
+            thumb.src = r.thumbnail || r.images[0].url; 
+            thumb.style.display = 'block'; 
+          }
+          
+          if (r.type === 'video' && r.download) {
+            dlButtons.appendChild(createDownloadButton('Unduh Video Pinterest', r.download, 'Pinterest_Video.mp4', 'hd'));
+          } else {
+            const imgTarget = r.download || r.images?.[0]?.url;
+            if (imgTarget) {
+              dlButtons.appendChild(createDownloadButton('Unduh Gambar Pinterest', imgTarget, 'Pinterest_Image.jpg'));
+            }
+          }
+
+          successLoaded = true;
+        }
+      } catch(e) { tulisLog('Parser Pinterest error: ' + e.message); }
+    }
+
+    if (!successLoaded || dlButtons.children.length === 0) {
+      throw new Error('Gagal mengekstrak tautan atau platform belum didukung.');
+    }
+
+    tulisLog('Ekstraksi selesai.');
+
+  } catch (err) {
+    tulisLog('ERROR: ' + err.message);
+    resultTitle.textContent = 'Gagal Memproses';
+    mediaTitle.textContent = err.message || 'Terjadi kesalahan pada sistem.';
+  } finally {
+    go.disabled = false;
+    go.textContent = 'Download';
+  }
+});
+</script>
+</body>
+</html>
